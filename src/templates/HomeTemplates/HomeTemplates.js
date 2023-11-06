@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Route } from "react-router-dom"
 import Header from "./Layouts/Header/Header";
 import HomeCarousel from "./Layouts/HomeCarousel/HomeCarousel";
+import Footer from "./Layouts/Footer/Footer";
 
 
 export const HomeTemplate = (props) => {
@@ -15,10 +16,8 @@ export const HomeTemplate = (props) => {
             <Component {...propsRoute} />
 
 
-
-            <footer className="bg-black h-10 text-white">
-                Đây là footer homepage
-            </footer>
+            <hr className="mt-5" />
+            <Footer />
         </Fragment >);
     }} />);
 }
