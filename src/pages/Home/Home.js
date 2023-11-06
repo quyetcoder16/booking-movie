@@ -2,7 +2,7 @@ import React from 'react'
 import HomeMenu from './HomeMenu/HomeMenu'
 
 export default function Home(props) {
-    console.log('propsHome', props)
+    
     return (
         <div>
             <section className="text-gray-600 body-font" >
