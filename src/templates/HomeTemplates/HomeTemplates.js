@@ -1,13 +1,16 @@
 import { Fragment } from "react";
 import { Route } from "react-router-dom"
+import Header from "./Layouts/Header/Header";
+import HomeCarousel from "./Layouts/HomeCarousel/HomeCarousel";
 
 
 export const HomeTemplate = (props) => {
     const { Component, ...resProps } = props;
     return (<Route {...resProps} render={(propsRoute) => {
         return (<Fragment >
-            <h1 className="bg-black h-10 text-white">Đây là header homepage</h1>
 
+            <Header {...propsRoute} />
+            <HomeCarousel {...propsRoute} />
 
             <Component {...propsRoute} />
 
