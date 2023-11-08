@@ -6,7 +6,7 @@ import TabPane from 'antd/es/tabs/TabPane';
 import { Rate, Tabs } from 'antd';
 import moment from 'moment';
 import { NavLink } from 'react-router-dom';
-import '../../assets/styles/circle.scss';
+import '../../assets/styles/circle.css';
 
 export default function Detail(props) {
 
@@ -34,14 +34,14 @@ export default function Detail(props) {
                             <img className="col-span-1" src={filmDetail.hinhAnh} style={{ width: '100%', height: 300 }} alt="123" />
                             <div className="col-span-2 ml-5" style={{ marginTop: '25%' }}>
                                 <p className="text-sm">Ngày chiếu: {moment(filmDetail.ngayKhoiChieu).format('DD.MM.YYYY')}</p>
-                                <p className="text-4xl leading-3">{filmDetail.tenPhim}</p>
+                                <p className="text-4xl leading-3 my-4">{filmDetail.tenPhim}</p>
                                 <p>{filmDetail.moTa}</p>
                             </div>
                         </div>
 
                     </div>
 
-                    <div className="col-span-4">
+                    <div className="ml-5 col-span-4">
                         <h1 style={{ marginLeft: '15%', color: 'yellow', fontWeight: 'bold', fontSize: 15 }}>Đánh giá</h1>
                         <h1 style={{ marginLeft: '5%' }} className="text-green-400 text-2xl"><Rate allowHalf value={filmDetail.danhGia / 2} style={{ color: '#78ed78', fontSize: 30 }} /></h1>
                         <div className={`c100 p${filmDetail.danhGia * 10} big`}>
