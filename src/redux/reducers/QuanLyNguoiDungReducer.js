@@ -3,7 +3,7 @@ import { DANG_NHAP_ACTION } from "../types/QuanLyNguoiDungType";
 
 let user = {};
 
-if (!localStorage.getItem(USER_LOGIN)) {
+if (localStorage.getItem(USER_LOGIN)) {
     user = JSON.parse(localStorage.getItem(USER_LOGIN));
 }
 
@@ -21,7 +21,9 @@ export const QuanLyNguoiDungReducer = (state = initialState, action) => {
             return { ...state, userLogin: thongTinDangNhap }
         }
 
-        default:
+        default: {
             return state
+        }
+
     }
 }

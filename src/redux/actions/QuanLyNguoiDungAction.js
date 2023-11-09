@@ -1,6 +1,6 @@
 import { quanLyNguoiDungService } from "../../services/QuanLyNguoiDungService";
 import { DANG_NHAP_ACTION } from "../types/QuanLyNguoiDungType";
-
+import { history } from '../../App';
 
 export const dangNhapAction = (thongTinDangNhap) => {
     return async (dispatch) => {
@@ -11,6 +11,7 @@ export const dangNhapAction = (thongTinDangNhap) => {
                     type: DANG_NHAP_ACTION,
                     thongTinDangNhap: data.content,
                 })
+                history.goBack();
             }
         } catch (err) {
             console.log(err);

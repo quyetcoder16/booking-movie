@@ -1,23 +1,36 @@
-import { CustomCard } from '@tsamantanis/react-glassmorphism'
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { layThongTinChiTietPhim } from '../../redux/actions/QuanLyRapAction';
-import TabPane from 'antd/es/tabs/TabPane';
-import { Rate, Tabs } from 'antd';
-import moment from 'moment';
+import { Button, CustomCard } from '@tsamantanis/react-glassmorphism'
+import '@tsamantanis/react-glassmorphism/dist/index.css'
+import '../../assets/styles/circle.css'
+import { Tabs, Radio, Space, Rate } from 'antd';
+import { useSelector, useDispatch } from 'react-redux';
+
+
+import moment from 'moment'; //npm i moment
+import { StarFilled, StarOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
-import '../../assets/styles/circle.css';
+import { layThongTinChiTietPhim } from '../../redux/actions/QuanLyRapAction';
+const { TabPane } = Tabs;
+
+
+
 
 export default function Detail(props) {
 
-    const { filmDetail } = useSelector(state => state.QuanLyPhimReducer);
+    const filmDetail = useSelector(state => state.QuanLyPhimReducer.filmDetail);
+
+    console.log({ filmDetail })
+
     const dispatch = useDispatch();
-    console.log(filmDetail);
-    console.log(props);
+
     useEffect(() => {
+        //Lấy thông tin param từ url
         let { id } = props.match.params;
-        dispatch(layThongTinChiTietPhim(id));
-    }, []);
+
+        dispatch(layThongTinChiTietPhim(id))
+
+
+    }, [])
 
     return (
         <div style={{ backgroundImage: `url(${filmDetail.hinhAnh})`, backgroundSize: '100%', backgroundPosition: 'center', minHeight: '100vh' }}>
@@ -34,14 +47,14 @@ export default function Detail(props) {
                             <img className="col-span-1" src={filmDetail.hinhAnh} style={{ width: '100%', height: 300 }} alt="123" />
                             <div className="col-span-2 ml-5" style={{ marginTop: '25%' }}>
                                 <p className="text-sm">Ngày chiếu: {moment(filmDetail.ngayKhoiChieu).format('DD.MM.YYYY')}</p>
-                                <p className="text-4xl leading-3 my-4">{filmDetail.tenPhim}</p>
+                                <p className="my-4 text-4xl leading-3">{filmDetail.tenPhim}</p>
                                 <p>{filmDetail.moTa}</p>
                             </div>
                         </div>
 
                     </div>
 
-                    <div className="ml-5 col-span-4">
+                    <div className="col-span-4">
                         <h1 style={{ marginLeft: '15%', color: 'yellow', fontWeight: 'bold', fontSize: 15 }}>Đánh giá</h1>
                         <h1 style={{ marginLeft: '5%' }} className="text-green-400 text-2xl"><Rate allowHalf value={filmDetail.danhGia / 2} style={{ color: '#78ed78', fontSize: 30 }} /></h1>
                         <div className={`c100 p${filmDetail.danhGia * 10} big`}>
@@ -67,7 +80,6 @@ export default function Detail(props) {
                             <div >
                                 <Tabs tabPosition={'left'} >
                                     {filmDetail.heThongRapChieu?.map((htr, index) => {
-                                        console.log("jhda");
                                         return <TabPane
                                             tab={<div className="flex flex-row items-center justify-center">
                                                 <img src={htr.logo} className="rounded-full w-full" style={{ width: 50 }} />
@@ -87,7 +99,7 @@ export default function Detail(props) {
                                                     </div>
                                                     <div className="thong-tin-lich-chieu grid grid-cols-4">
                                                         {cumRap.lichChieuPhim?.slice(0, 12).map((lichChieu, index) => {
-                                                            return <NavLink to="/" key={index} className="col-span-1 text-green-800 font-bold">
+                                                            return <NavLink to={`/checkout/${lichChieu.maLichChieu}`} key={index} className="col-span-1 text-green-800 font-bold">
                                                                 {moment(lichChieu.ngayChieuGioChieu).format('hh:mm A')}
                                                             </NavLink>
                                                         })}
@@ -118,3 +130,8 @@ export default function Detail(props) {
         </div>
     )
 }
+
+
+
+
+
