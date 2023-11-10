@@ -179,8 +179,9 @@ export default function (props) {
     const dispatch = useDispatch();
     return <div className="p-5">
         <Tabs defaultActiveKey="1" activeKey={tabActive} onChange={(key) => {
+
             dispatch({
-                type: CHUYEN_TAB,
+                type: "CHANGE_TAB_ACTIVE",
                 number: key.toString(),
             })
         }}>
