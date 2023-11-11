@@ -1,30 +1,86 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import style from './Checkout.module.css';
-import { CheckOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons'
+import { CheckOutlined, CloseOutlined, UserOutlined, SmileOutlined } from '@ant-design/icons'
 import './Checkout.css';
 import _ from 'lodash';
+
 import { Tabs } from 'antd';
 import moment from 'moment';
-import { CHUYEN_TAB, DAT_VE } from '../../redux/types/QuanLyDatVeType';
+import { connection } from '../../index';
+import { datGheAction, datVeAction, layChiTietPhongVeAction } from '../../redux/actions/QuanLyDatVeAction'
 import { ThongTinDatVe } from '../../_core/models/ThongTinDatVe';
-import { datVeAction, layChiTietPhongVeAction } from '../../redux/actions/QuanLyDatVeAction';
 import { LayThongTinNguoiDungAction } from '../../redux/actions/QuanLyNguoiDungAction';
 
 
 function Checkout(props) {
 
     const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
-    const { chiTietPhongVe, danhSachGheDangDat } = useSelector(state => state.QuanLyDatVeReducer);
+    const { chiTietPhongVe, danhSachGheDangDat, danhSachGheKhachDat } = useSelector(state => state.QuanLyDatVeReducer);
+
+
+
     const dispatch = useDispatch();
     console.log('danhSachGheDangDat', danhSachGheDangDat);
     useEffect(() => {
         //Gọi hàm tạo ra 1 async function 
         const action = layChiTietPhongVeAction(props.match.params.id);
         //Dispatch function này đi
-        dispatch(action)
+        dispatch(action);
+
+        //Có 1 client nào thực hiện việc đặt vé thành công mình sẽ load lại danh sách phòng vé của lịch chiếu đó
+        connection.on('datVeThanhCong', () => {
+            dispatch(action);
+        })
+
+
+
+        //Vừa vào trang load tất cả ghế của các người khác đang đặt
+        connection.invoke('loadDanhSachGhe', props.match.params.id);
+
+
+        //Load danh sách ghế đang đặt từ server về (lắng nghe tín hiệu từ server trả về)
+        connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
+            console.log('danhSachGheKhachDat', dsGheKhachDat);
+            //Bước 1: Loại mình ra khỏi danh sách 
+            dsGheKhachDat = dsGheKhachDat.filter(item => item.taiKhoan !== userLogin.taiKhoan);
+            //Bước 2 gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung 
+
+            let arrGheKhachDat = dsGheKhachDat.reduce((result, item, index) => {
+                let arrGhe = JSON.parse(item.danhSachGhe);
+
+                return [...result, ...arrGhe];
+            }, []);
+
+            //Đưa dữ liệu ghế khách đặt cập nhật redux
+            arrGheKhachDat = _.uniqBy(arrGheKhachDat, 'maGhe');
+
+            //Đưa dữ liệu ghế khách đặt về redux
+            dispatch({
+                type: 'DAT_GHE',
+                arrGheKhachDat
+            })
+
+        })
+
+        //Cài đặt sự kiện khi reload trang
+        window.addEventListener("beforeunload", clearGhe);
+
+        return () => {
+            clearGhe();
+            window.removeEventListener('beforeunload', clearGhe);
+        }
+
     }, [])
+
+    const clearGhe = function (event) {
+
+        connection.invoke('huyDat', userLogin.taiKhoan, props.match.params.id);
+
+
+    }
+
 
     console.log({ chiTietPhongVe });
     const { thongTinPhim, danhSachGhe } = chiTietPhongVe;
@@ -39,6 +95,12 @@ function Checkout(props) {
             //Kiểm tra từng ghế render xem có trong mảng ghế đang đặt hay không
             let indexGheDD = danhSachGheDangDat.findIndex(gheDD => gheDD.maGhe === ghe.maGhe);
 
+            //Kiểm tra từng render xem có phải ghế khách đặt hay không
+            let classGheKhachDat = '';
+            let indexGheKD = danhSachGheKhachDat.findIndex(gheKD => gheKD.maGhe === ghe.maGhe);
+            if (indexGheKD !== -1) {
+                classGheKhachDat = 'gheKhachDat';
+            }
             let classGheDaDuocDat = '';
             if (userLogin.taiKhoan === ghe.taiKhoanNguoiDat) {
                 classGheDaDuocDat = 'gheDaDuocDat';
@@ -52,13 +114,14 @@ function Checkout(props) {
 
             return <Fragment key={index}>
                 <button onClick={() => {
-                    dispatch({
-                        type: DAT_VE,
-                        gheDuocChon: ghe
-                    })
-                }} disabled={ghe.daDat} className={`ghe ${classGheVip} ${classGheDaDat} ${classGheDangDat} ${classGheDaDuocDat} text-center`} key={index}>
 
-                    {ghe.daDat ? classGheDaDuocDat != '' ? <UserOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> : <CloseOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> : ghe.stt}
+                    const action = datGheAction(ghe, props.match.params.id);
+                    dispatch(action);
+
+
+                }} disabled={ghe.daDat || classGheKhachDat !== ''} className={`ghe ${classGheVip} ${classGheDaDat} ${classGheDangDat} ${classGheDaDuocDat} ${classGheKhachDat} text-center`} key={index}>
+
+                    {ghe.daDat ? classGheDaDuocDat != '' ? <UserOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> : <CloseOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> : classGheKhachDat !== '' ? <SmileOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> : ghe.stt}
 
                 </button>
 
@@ -93,6 +156,7 @@ function Checkout(props) {
                                     <th>Ghế vip</th>
                                     <th>Ghế đã đặt</th>
                                     <th>Ghế mình đặt</th>
+                                    <th>Ghế khách đang đặt</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -102,6 +166,8 @@ function Checkout(props) {
                                     <td><button className="ghe gheVip text-center"><CheckOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /></button> </td>
                                     <td><button className="ghe gheDaDat text-center"> <CheckOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> </button> </td>
                                     <td><button className="ghe gheDaDuocDat text-center"> <CheckOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> </button> </td>
+                                    <td><button className="ghe gheKhachDat text-center"> <CheckOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> </button> </td>
+
                                 </tr>
                             </tbody>
                         </table>
@@ -170,22 +236,21 @@ function Checkout(props) {
 
 const { TabPane } = Tabs;
 
-function callback(key) {
-    console.log(key);
-}
-export default function (props) {
+export default function CheckoutTab(props) {
+
     const { tabActive } = useSelector(state => state.QuanLyDatVeReducer);
-    console.log(tabActive)
     const dispatch = useDispatch();
+    console.log('tabActive', tabActive)
     return <div className="p-5">
         <Tabs defaultActiveKey="1" activeKey={tabActive} onChange={(key) => {
 
+            // console.log('key',  key)
             dispatch({
-                type: "CHANGE_TAB_ACTIVE",
-                number: key.toString(),
+                type: 'CHANGE_TAB_ACTIVE',
+                number: key.toString()
             })
         }}>
-            <TabPane tab="01 CHỌN GHẾ & THANH TOÁN" key="1">
+            <TabPane tab="01 CHỌN GHẾ & THANH TOÁN" key="1" >
                 <Checkout {...props} />
             </TabPane>
             <TabPane tab="02 KẾT QUẢ ĐẶT VÉ" key="2">
