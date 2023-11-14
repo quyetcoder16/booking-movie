@@ -6,6 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './redux/ConfigStore';
 
+// i18n
+
+import './i18n';
+
 // setup SignalR 
 
 import * as signalR from '@aspnet/signalr'

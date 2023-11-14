@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import style from './Checkout.module.css';
-import { CheckOutlined, CloseOutlined, UserOutlined, SmileOutlined } from '@ant-design/icons'
+import { CheckOutlined, CloseOutlined, UserOutlined, SmileOutlined, HomeOutlined } from '@ant-design/icons'
 import './Checkout.css';
 import _ from 'lodash';
 
@@ -12,6 +12,9 @@ import { connection } from '../../index';
 import { datGheAction, datVeAction, layChiTietPhongVeAction } from '../../redux/actions/QuanLyDatVeAction'
 import { ThongTinDatVe } from '../../_core/models/ThongTinDatVe';
 import { LayThongTinNguoiDungAction } from '../../redux/actions/QuanLyNguoiDungAction';
+import { history } from '../../App';
+import { TOKEN, USER_LOGIN } from '../../utils/Setting/config';
+import { NavLink } from 'react-router-dom';
 
 
 function Checkout(props) {
@@ -186,7 +189,6 @@ function Checkout(props) {
                     <div className="flex flex-row my-5">
                         <div className="w-4/5">
                             <span className="text-red-400 text-lg">Ghế</span>
-
                             {_.sortBy(danhSachGheDangDat, ['stt']).map((gheDD, index) => {
                                 return <span key={index} className="text-green-500 text-xl"> {gheDD.stt}</span>
                             })}
@@ -241,8 +243,32 @@ export default function CheckoutTab(props) {
     const { tabActive } = useSelector(state => state.QuanLyDatVeReducer);
     const dispatch = useDispatch();
     console.log('tabActive', tabActive)
+
+    const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer)
+    useEffect(() => {
+        return () => {
+            dispatch({
+                type: 'CHANGE_TAB_ACTIVE',
+                number: '1'
+            })
+        }
+    }, [])
+
+    const operations = <Fragment>
+        {!_.isEmpty(userLogin) ? <Fragment> <button onClick={() => {
+            history.push('/profile')
+        }}> <div style={{ width: 50, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="text-2xl ml-5 rounded-full bg-red-200">{userLogin.taiKhoan.substr(0, 1)}</div>Hello ! {userLogin.taiKhoan}</button> <button onClick={() => {
+            localStorage.removeItem(USER_LOGIN);
+            localStorage.removeItem(TOKEN);
+            history.push('/home');
+            window.location.reload();
+        }} className="text-blue-800">Đăng xuất</button> </Fragment> : ''}
+
+
+    </Fragment>
+
     return <div className="p-5">
-        <Tabs defaultActiveKey="1" activeKey={tabActive} onChange={(key) => {
+        <Tabs tabBarExtraContent={operations} defaultActiveKey="1" activeKey={tabActive} onChange={(key) => {
 
             // console.log('key',  key)
             dispatch({
@@ -255,6 +281,10 @@ export default function CheckoutTab(props) {
             </TabPane>
             <TabPane tab="02 KẾT QUẢ ĐẶT VÉ" key="2">
                 <KetQuaDatVe {...props} />
+            </TabPane>
+
+            <TabPane tab={<div className="text-center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><NavLink to="/"><HomeOutlined style={{ marginLeft: 10, fontSize: 25 }} /></NavLink></div>} key="3">
+
             </TabPane>
 
         </Tabs>

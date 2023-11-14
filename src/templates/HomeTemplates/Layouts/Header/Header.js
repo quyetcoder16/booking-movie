@@ -1,8 +1,49 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { NavLink } from 'react-router-dom'
 import { history } from '../../../../App'
 
+import { useTranslation } from 'react-i18next';
+import { Select } from 'antd';
+import { useSelector } from 'react-redux';
+import { TOKEN, USER_LOGIN } from '../../../../utils/Setting/config';
+import _ from 'lodash';
+const { Option } = Select;
+
 export default function Header(props) {
+
+    const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
+
+    const { t, i18n } = useTranslation();
+
+
+    const handleChange = (value) => {
+        i18n.changeLanguage(value)
+    }
+
+    const renderLogin = () => {
+        if (_.isEmpty(userLogin)) {
+            return <Fragment>
+                <button className="self-center px-8 py-3 rounded" onClick={() => {
+                    history.push('/login');
+                }}>{t('signin')}</button>
+                <button className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900" >{t("signup")}</button>
+
+            </Fragment>
+        }
+
+
+        return <Fragment> <button onClick={() => {
+            history.push('/profile')
+        }} className="self-center px-8 py-3 rounded">Hello ! {userLogin.taiKhoan}</button>
+            <button onClick={() => {
+                localStorage.removeItem(USER_LOGIN);
+                localStorage.removeItem(TOKEN);
+                history.push('/home');
+                window.location.reload();
+            }} className="text-yellow-500 mr-5">Đăng xuất</button>
+        </Fragment>
+    }
+
     return (
         <header className="p-4 dark:bg-gray-800 dark:text-gray-100 bg-opacity-40 bg-black text-white fixed w-full z-50">
             <div className="container flex justify-between h-16 mx-auto">
@@ -21,11 +62,15 @@ export default function Header(props) {
                     </li>
                 </ul>
                 <div className="items-center flex-shrink-0 hidden lg:flex">
-                    <button className="self-center px-8 py-3 rounded" onClick={() => {
-                        history.push('/login');
-                    }}>Sign in</button>
-                    <button className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900" >Sign up</button>
+                    {renderLogin()}
+                    <Select defaultValue="en" style={{ width: 100 }} onChange={handleChange}>
+                        <Option value="en">Eng</Option>
+                        <Option value="chi">Chi</Option>
+
+                        <Option value="vi">Vi</Option>
+                    </Select>
                 </div>
+
                 <button className="p-4 lg:hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 dark:text-gray-100">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
