@@ -17,6 +17,7 @@ import Dashboard from './pages/Admin/DashBoard/DashBoard';
 import Films from './pages/Admin/Films/Films';
 import AddNew from './pages/Admin/Films/AddNew/AddNew';
 import ShowTime from './pages/Admin/ShowTime/ShowTime';
+import Edit from './pages/Admin/Films/Edit/Edit';
 export const history = createBrowserHistory();
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <AdminTemplate path="/admin/films/addnew" exact Component={AddNew} />
         <AdminTemplate path="/admin/users" exact Component={Dashboard} />
         <AdminTemplate path="/admin/showtimes" exact Component={ShowTime} />
+        <AdminTemplate path="/admin/films/edit/:id" exact Component={Edit} />
 
       </Switch>
     </Router>
