@@ -2,13 +2,13 @@ import { history } from "../../App";
 import { quanLyPhimService } from "../../services/QuanLyPhimService";
 import { SET_DANH_SACH_PHIM, SET_THONG_TIN_PHIM } from "../types/QuanLyPhimType";
 
-export const layDanhSachPhimAction = () => {
+export const layDanhSachPhimAction = (tenPhim = '') => {
 
 
     return async (dispatch) => {
         try {
             //Sử dụng tham số thamSo
-            const result = await quanLyPhimService.layDanhSachPhim();
+            const result = await quanLyPhimService.layDanhSachPhim(tenPhim);
 
             //Sau khi lấy dữ liệu từ api về => redux (reducer)
             dispatch({
@@ -73,4 +73,19 @@ export const layThongTinPhimAction = (maPhim) => {
             console.log('errors', errors)
         }
     };
+}
+
+export const xoaPhimAction = (maPhim) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyPhimService.xoaPhim(maPhim);
+            console.log(data);
+            if (status === 200) {
+                alert("xóa phim thành công");
+                dispatch(layDanhSachPhimAction());
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 }

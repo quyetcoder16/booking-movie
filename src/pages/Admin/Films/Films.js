@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { NavLink } from 'react-router-dom';
 import { history } from '../../../App';
-import { layDanhSachPhimAction } from '../../../redux/actions/QuanLyPhimAction';
+import { layDanhSachPhimAction, xoaPhimAction } from '../../../redux/actions/QuanLyPhimAction';
 const { Search } = Input;
 
 export default function Films() {
@@ -81,11 +81,15 @@ export default function Films() {
         },
         {
             title: 'Hành động',
-            dataIndex: 'hanhDong',
+            dataIndex: 'maPhim',
             render: (text, film) => {
                 return <Fragment>
                     <NavLink key={1} className=" mr-2  text-2xl" to={`/admin/films/edit/${film.maPhim}`}><EditOutlined style={{ color: 'blue' }} /> </NavLink>
-                    <NavLink key={2} className="text-2xl" to="/"><DeleteOutlined style={{ color: 'red' }} /> </NavLink>
+                    <span key={2} className="text-2xl cursor-pointer" onClick={() => {
+                        if (window.confirm('Bạn có chắc muốn xoá phim ' + film.tenPhim)) {
+                            dispatch(xoaPhimAction(film.maPhim));
+                        }
+                    }}><DeleteOutlined style={{ color: 'red' }} /> </span>
                 </Fragment>
             },
             sortDirections: ['descend', 'ascend'],
@@ -96,7 +100,9 @@ export default function Films() {
 
 
 
-    const onSearch = value => console.log(value);
+    const onSearch = value => {
+        dispatch(layDanhSachPhimAction(value));
+    }
 
     function onChange(pagination, filters, sorter, extra) {
         console.log('params', pagination, filters, sorter, extra);
@@ -120,7 +126,7 @@ export default function Films() {
                 onSearch={onSearch}
             />
 
-            <Table columns={columns} dataSource={data} onChange={onChange} />
+            <Table columns={columns} dataSource={data} onChange={onChange} rowKey={"maPhim"} />
         </div>
     )
 }
