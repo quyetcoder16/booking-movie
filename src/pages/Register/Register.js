@@ -2,6 +2,7 @@ import { withFormik } from 'formik';
 import React from 'react'
 import { connect } from 'react-redux';
 import { dangKyAction } from '../../redux/actions/QuanLyNguoiDungAction';
+import * as Yup from 'yup';
 
 function Register(props) {
 
@@ -21,19 +22,25 @@ function Register(props) {
                 {/* form */}
                 <div className="md:w-1/2 px-8 md:px-16">
                     <h2 className="font-bold text-2xl text-[#002D74]">Register</h2>
-                    <form onSubmit={handleSubmit} action className="flex flex-col gap-4">
+                    <form onSubmit={handleSubmit} action className="flex flex-col gap-2">
                         <input onChange={handleChange} className="p-2 mt-8 rounded-xl border" type="text" name="taiKhoan" placeholder="User Name" />
+                        <span>{errors.taiKhoan}</span>
                         <div className="relative">
                             <input onChange={handleChange} className="p-2 rounded-xl border w-full" type="password" name="matKhau" placeholder="Password" />
                         </div>
+                        <span>{errors.matKhau}</span>
                         <div className="relative">
                             <input onChange={handleChange} className="p-2 rounded-xl border w-full" type="password" name="matKhauNhapLai" placeholder="Confirm Password" />
                         </div>
+                        <span>{errors.matKhauNhapLai}</span>
                         <div className="relative">
                             <input onChange={handleChange} className="p-2 rounded-xl border w-full" type="name" name="hoTen" placeholder="Name" />
                         </div>
+                        <span>{errors.hoTen}</span>
                         <input onChange={handleChange} class="p-2 rounded-xl border" type="email" name="email" placeholder="Email"></input>
+                        <span>{errors.email}</span>
                         <input onChange={handleChange} class="p-2 rounded-xl border" type="text" name="soDt" placeholder="Phone Number"></input>
+                        <span>{errors.soDt}</span>
                         <button type='submit' className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300">Register</button>
                     </form>
                     <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
@@ -74,18 +81,29 @@ const RegisterWithFormik = withFormik({
         hoTen: "",
     }),
 
-    // Custom sync validation
-    validate: values => {
-        // const errors = {};
+    validationSchema: Yup.object().shape({
+        email: Yup.string().email('invalid Email').required('Required'),
+        matKhau: Yup.string().min(6, 'password must have min 6 character!').max(32, 'password must have max 32 character'),
+        soDt: Yup.number()
+            .typeError("That doesn't look like a phone number")
+            .positive("A phone number can't start with a minus")
+            .integer("A phone number can't include a decimal point")
+            .min(10, "phone must have min 10 number")
+            .required('A phone number is required'),
+        hoTen: Yup.string()
+            .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
+            .max(40)
+            .required("Required"),
+        taiKhoan: Yup.string()
+            .min(1, "Mininum 1 characters")
+            .max(15, "Maximum 15 characters")
+            .required("You must enter a username"),
+        matKhauNhapLai: Yup.string()
+            .oneOf([Yup.ref('matKhau'), null], 'Passwords must match'),
 
-        // if (!values.name) {
-        //     errors.name = 'Required';
-        // }
+    }),
 
-        // return errors;
-    },
-
-    handleSubmit: (values, {props,setSubmitting}) => {
+    handleSubmit: (values, { props, setSubmitting }) => {
         // console.log(props);
         props.dispatch(dangKyAction(values));
     },
