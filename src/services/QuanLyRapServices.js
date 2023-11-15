@@ -14,6 +14,13 @@ export class QuanLyRapServices extends BaseService {
     layThongTinLichChieuPhim = (maPhim) => {
         return this.get(`QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`);
     }
+
+    layThongTinHeThongRap = () => {
+        return this.get(`QuanLyRap/LayThongTinHeThongRap`);
+    }
+    layThongTinCumRap = (maHeThongRap) => {
+        return this.get(`QuanLyRap/LayThongTinCumRapTheoHeThong?maHeThongRap=${maHeThongRap}`);
+    }
 }
 
 export const quanLyRapServices = new QuanLyRapServices();

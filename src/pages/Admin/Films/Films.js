@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react'
 import { Button, Table } from 'antd';
 
 import { Input, Space } from 'antd';
-import { AudioOutlined, EditOutlined, SearchOutlined, DeleteOutlined } from '@ant-design/icons';
+import { AudioOutlined, EditOutlined, SearchOutlined, DeleteOutlined, CalendarOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { NavLink } from 'react-router-dom';
@@ -90,6 +90,9 @@ export default function Films() {
                             dispatch(xoaPhimAction(film.maPhim));
                         }
                     }}><DeleteOutlined style={{ color: 'red' }} /> </span>
+                    <NavLink key={1} className=" mr-2 text-2xl" to={`/admin/films/showtime/${film.maPhim}/${film.tenPhim}`} onClick={() => {
+                        localStorage.setItem('filmParams', JSON.stringify(film));
+                    }}><CalendarOutlined style={{ color: 'green' }} /> </NavLink>
                 </Fragment>
             },
             sortDirections: ['descend', 'ascend'],

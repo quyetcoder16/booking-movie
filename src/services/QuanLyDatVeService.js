@@ -15,6 +15,10 @@ export class QuanLyDatVeService extends BaseService {
         return this.post("QuanLyDatVe/DatVe", thongTinDatVe);
     }
 
+    taoLichChieu = (thongTinLichChieu) => {
+        return this.post(`QuanLyDatVe/TaoLichChieu`, thongTinLichChieu);
+    }
+
 }
 
 export const quanLyDatVeService = new QuanLyDatVeService();
