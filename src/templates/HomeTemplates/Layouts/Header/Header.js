@@ -26,7 +26,9 @@ export default function Header(props) {
                 <button className="self-center px-8 py-3 rounded" onClick={() => {
                     history.push('/login');
                 }}>{t('signin')}</button>
-                <button className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900" >{t("signup")}</button>
+                <button className="self-center px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900" onClick={()=>{
+                    history.push("/register");
+                }} >{t("signup")}</button>
 
             </Fragment>
         }

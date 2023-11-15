@@ -1,6 +1,19 @@
+import { withFormik } from 'formik';
 import React from 'react'
+import { connect } from 'react-redux';
+import { dangKyAction } from '../../redux/actions/QuanLyNguoiDungAction';
 
-export default function Register() {
+function Register(props) {
+
+    const {
+        values,
+        touched,
+        errors,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+    } = props;
+
     return (
         <section className="bg-gray-50 min-h-screen flex items-center justify-center">
             {/* login container */}
@@ -8,20 +21,20 @@ export default function Register() {
                 {/* form */}
                 <div className="md:w-1/2 px-8 md:px-16">
                     <h2 className="font-bold text-2xl text-[#002D74]">Register</h2>
-                    <form action className="flex flex-col gap-4">
-                        <input className="p-2 mt-8 rounded-xl border" type="text" name="userName" placeholder="User Name" />
+                    <form onSubmit={handleSubmit} action className="flex flex-col gap-4">
+                        <input onChange={handleChange} className="p-2 mt-8 rounded-xl border" type="text" name="taiKhoan" placeholder="User Name" />
                         <div className="relative">
-                            <input className="p-2 rounded-xl border w-full" type="password" name="password" placeholder="Password" />
+                            <input onChange={handleChange} className="p-2 rounded-xl border w-full" type="password" name="matKhau" placeholder="Password" />
                         </div>
                         <div className="relative">
-                            <input className="p-2 rounded-xl border w-full" type="password" name="confirmPassword" placeholder="Confirm Password" />
+                            <input onChange={handleChange} className="p-2 rounded-xl border w-full" type="password" name="matKhauNhapLai" placeholder="Confirm Password" />
                         </div>
                         <div className="relative">
-                            <input className="p-2 rounded-xl border w-full" type="name" name="name" placeholder="Name" />
+                            <input onChange={handleChange} className="p-2 rounded-xl border w-full" type="name" name="hoTen" placeholder="Name" />
                         </div>
-                        <input class="p-2 rounded-xl border" type="email" name="email" placeholder="Email"></input>
-                        <input class="p-2 rounded-xl border" type="text" name="phoneNumber" placeholder="Phone Number"></input>
-                        <button className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300">Register</button>
+                        <input onChange={handleChange} class="p-2 rounded-xl border" type="email" name="email" placeholder="Email"></input>
+                        <input onChange={handleChange} class="p-2 rounded-xl border" type="text" name="soDt" placeholder="Phone Number"></input>
+                        <button type='submit' className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300">Register</button>
                     </form>
                     <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
                         <hr className="border-gray-400" />
@@ -49,3 +62,35 @@ export default function Register() {
 
     )
 }
+
+const RegisterWithFormik = withFormik({
+    mapPropsToValues: () => ({
+        taiKhoan: "",
+        matKhau: "",
+        matKhauNhapLai: "",
+        email: "",
+        soDt: "",
+        maNhom: "GP01",
+        hoTen: "",
+    }),
+
+    // Custom sync validation
+    validate: values => {
+        // const errors = {};
+
+        // if (!values.name) {
+        //     errors.name = 'Required';
+        // }
+
+        // return errors;
+    },
+
+    handleSubmit: (values, {props,setSubmitting}) => {
+        // console.log(props);
+        props.dispatch(dangKyAction(values));
+    },
+
+    displayName: 'Register',
+})(Register);
+
+export default connect()(RegisterWithFormik);

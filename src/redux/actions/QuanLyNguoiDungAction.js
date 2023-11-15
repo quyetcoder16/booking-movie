@@ -11,7 +11,21 @@ export const dangNhapAction = (thongTinDangNhap) => {
                     type: DANG_NHAP_ACTION,
                     thongTinDangNhap: data.content,
                 })
-                history.goBack();
+                history.push("/home");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+export const dangKyAction = (thongTinDangKy) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.dangKy(thongTinDangKy);
+            // console.log(data);
+            if (status === 200) {
+                history.push('/login');
             }
         } catch (err) {
             console.log(err);
