@@ -18,6 +18,10 @@ export class QuanLyNguoiDungService extends BaseService {
         return this.post("QuanLyNguoiDung/DangKy", dataDangKy);
     }
 
+    capNhatThongTinNguoiDung = (thongTinUpdate) => {
+        return this.put("QuanLyNguoiDung/CapNhatThongTinNguoiDung", thongTinUpdate);
+    }
+
 }
 
 export const quanLyNguoiDungService = new QuanLyNguoiDungService();

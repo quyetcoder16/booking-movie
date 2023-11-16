@@ -48,3 +48,19 @@ export const LayThongTinNguoiDungAction = () => {
         }
     }
 }
+
+export const capNhatThongTinNguoiDungAction = (thongTinNguoiDungUpdate) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.capNhatThongTinNguoiDung(thongTinNguoiDungUpdate);
+            // console.log(data);
+            // console.log(data);
+            if (status === 200) {
+                alert("Cập nhật thành công")
+                dispatch(LayThongTinNguoiDungAction());
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
