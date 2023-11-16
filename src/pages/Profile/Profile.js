@@ -7,13 +7,15 @@ import _, { functionsIn } from 'lodash';
 import moment from 'moment';
 import { withFormik } from 'formik';
 import * as Yup from 'yup';
+import { layThongTinHeThongRapAction } from '../../redux/actions/QuanLyRapAction';
+import { quanLyRapServices } from '../../services/QuanLyRapServices';
 
 function Profile(props) {
 
     return (
         <div className='pt-24'  >
             <div className='p-10'>
-                <Tabs defaultActiveKey="1" size='large'>
+                <Tabs defaultActiveKey="2" size='large'>
                     <Tabs.TabPane tab="Thông Tin Cá Nhân" key="1">
                         <ThongTinCaNhan {...props} />
                     </Tabs.TabPane>
@@ -128,18 +130,70 @@ function ThongTinCaNhan(props) {
 function LichSuDatVe(props) {
 
     const dispatch = useDispatch();
-    const { thongTinNguoiDung } = useSelector(state => state.QuanLyNguoiDungReducer);
-    console.log(thongTinNguoiDung);
-
-    const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
-
 
     useEffect(() => {
         const action = LayThongTinNguoiDungAction();
-        dispatch(action)
+        dispatch(action);
+        dispatch(layThongTinHeThongRapAction());
     }, [])
 
-    console.log('thongTinNguoiDung', thongTinNguoiDung);
+    const { thongTinNguoiDung } = useSelector(state => state.QuanLyNguoiDungReducer);
+    const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
+    const { thongTinHeThongRap } = useSelector(state => state.QuanLyRapReducer);
+
+    // console.log(thongTinHeThongRap);
+
+    const layThongTinCumRap = async (maRap) => {
+        try {
+            const { data, status } = await quanLyRapServices.layThongTinCumRapTheoHeThong(maRap);
+            if (status === 200) {
+                return data.content;
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+
+    const renderLichSuDatVe = () => {
+        return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
+            console.log(ticket);
+            const seats = _.first(ticket.danhSachGhe);
+            const rap = _.find(thongTinHeThongRap, state => state.maHeThongRap === seats.maHeThongRap);
+            // console.log(rap);
+            // console.log(seats);
+            const thongTinCumRap = layThongTinCumRap(seats.maHeThongRap);
+            console.log(thongTinCumRap);
+            return (<div className='w-full pt-10 '>
+                <div className='grid grid-cols-12 border-solid  border-b-slate-900 border-2'>
+                    {/* <div>{ }</div> */}
+                    <div className='col-span-2'>
+                        <img style={{ width: 150, height: 150 }} src={ticket.hinhAnh} alt={ticket.hinhAnh} />
+                    </div>
+                    <div className='col-span-10 '>
+                        <div className='flex'>
+                            <div>
+                                <img style={{ width: 100, height: 100 }} src={rap.logo} alt='' />
+                            </div>
+                            <div className='ml-2'>
+                                <div className='text-xl' style={{ fontWeight: "bold" }}>{seats.tenHeThongRap}</div>
+                                <div className='mt-5 text-base
+                                '>địa chỉ</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p className="text-gray-500">
+                                <span className="font-bold">Ngày Đặt: </span>
+                                {moment(ticket.ngayDat).format('DD-MM-YYYY')} {moment(ticket.ngayDat).format('hh:mm A')} -
+                                <span className="font-bold"> {seats.tenRap} </span> -
+                                <span className="font-bold">Ghế:</span>  {ticket.danhSachGhe.map((ghe, index) => { return <span className="text-green-500 text-xl" key={index}> [ {ghe.tenGhe} ] </span> })}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>)
+        })
+    }
 
     const renderTicketItem = function () {
         return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
@@ -168,6 +222,7 @@ function LichSuDatVe(props) {
 
                 <div className="flex flex-wrap -m-2">
                     {renderTicketItem()}
+                    {renderLichSuDatVe()}
                 </div>
             </div>
         </section>

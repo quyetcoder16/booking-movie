@@ -1,7 +1,8 @@
-import { SET_HE_THONG_RAP_CHIEU } from "../types/QuanLyRapType";
+import { LAY_THONG_TIN_HE_THONG_RAP, SET_HE_THONG_RAP_CHIEU } from "../types/QuanLyRapType";
 
 const stateDefault = {
-    heThongRapChieu: []
+    heThongRapChieu: [],
+    thongTinHeThongRap: [],
 }
 
 export const QuanLyRapReducer = (state = stateDefault, action) => {
@@ -9,6 +10,11 @@ export const QuanLyRapReducer = (state = stateDefault, action) => {
 
         case SET_HE_THONG_RAP_CHIEU: {
             state.heThongRapChieu = action.heThongRapChieu;
+            return { ...state };
+        }
+
+        case LAY_THONG_TIN_HE_THONG_RAP: {
+            state.thongTinHeThongRap = action.thongTinHeThongRap;
             return { ...state };
         }
 

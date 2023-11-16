@@ -19,7 +19,7 @@ export class BaseService {
         })
     }
     get = (url) => {
-        console.log('Bearer ' + localStorage.getItem(TOKEN));
+        // console.log('Bearer ' + localStorage.getItem(TOKEN));
         // console.log(`${DOMAIN}/${url}`);
         return Axios({
             url: `${DOMAIN}/${url}`,
