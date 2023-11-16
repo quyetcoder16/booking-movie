@@ -127,7 +127,18 @@ function ThongTinCaNhan(props) {
     </>)
 }
 
-function LichSuDatVe(props) {
+const layThongTinCumRap = async (maRap) => {
+    try {
+        const { data, status } = await quanLyRapServices.layThongTinCumRapTheoHeThong(maRap);
+        if (status === 200) {
+            return data.content;
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const LichSuDatVe = async (props) => {
 
     const dispatch = useDispatch();
 
@@ -143,27 +154,59 @@ function LichSuDatVe(props) {
 
     // console.log(thongTinHeThongRap);
 
-    const layThongTinCumRap = async (maRap) => {
-        try {
-            const { data, status } = await quanLyRapServices.layThongTinCumRapTheoHeThong(maRap);
-            if (status === 200) {
-                return data.content;
-            }
-        } catch (err) {
-            console.log(err);
-        }
+    let arrThongTinCumRap = [];
+    const [thongTinCumRap, setThongTinCumRap] = useState([]);
+    // _.map(thongTinNguoiDung.thongTinDatVe, async (ticket, index) => {
+    //     const seats = _.first(ticket.danhSachGhe);
+    //     let tmp = await layThongTinCumRap(seats.maHeThongRap);
+    //     arrThongTinCumRap.push({
+    //         maHeThongRap: seats.maHeThongRap,
+    //         danhSachCumRap: tmp,
+    //     });
+    // });
+
+    for (const ticket of thongTinNguoiDung.thongTinDatVe) {
+        const seats = _.first(ticket.danhSachGhe);
+        let tmp = await layThongTinCumRap(seats.maHeThongRap);
+        arrThongTinCumRap.push({
+            maHeThongRap: seats.maHeThongRap,
+            danhSachCumRap: tmp,
+        });
     }
 
+    setThongTinCumRap(arrThongTinCumRap);
+    console.log(arrThongTinCumRap);
+
+    // console.log(thongTinCumRap);
+    // console.log(thongTinCumRap);
+
+    // console.log(thongTinCumRap);
 
     const renderLichSuDatVe = () => {
+
         return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
             console.log(ticket);
             const seats = _.first(ticket.danhSachGhe);
             const rap = _.find(thongTinHeThongRap, state => state.maHeThongRap === seats.maHeThongRap);
             // console.log(rap);
             // console.log(seats);
-            const thongTinCumRap = layThongTinCumRap(seats.maHeThongRap);
-            console.log(thongTinCumRap);
+            // const thongTinCumRap = layThongTinCumRap(seats.maHeThongRap);
+            // console.log(thongTinCumRap);
+
+            // console.log(thongTinCumRap);
+            // console.log(seats.maHeThongRap);
+            // Promise.all([thongTinCumRap]).then(() => {
+            //     let diaChi = _.findIndex(thongTinCumRap, item => item.maHeThongRap === seats.maHeThongRap);
+            //     console.log(diaChi);
+            // })
+
+            // for (let item of thongTinCumRap) {
+            //     console.log(item);
+            //     if (item.maHeThongRap === seats.maHeThongRap) {
+            //         console.log(item);
+            //     }
+            // }
+
             return (<div className='w-full pt-10 '>
                 <div className='grid grid-cols-12 border-solid  border-b-slate-900 border-2'>
                     {/* <div>{ }</div> */}
@@ -195,33 +238,15 @@ function LichSuDatVe(props) {
         })
     }
 
-    const renderTicketItem = function () {
-        return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
-            const seats = _.first(ticket.danhSachGhe);
 
-            return <div className="p-2 lg:w-1/3 md:w-1/2 w-full" key={index}>
-                <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-                    <img alt="team" className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src={ticket.hinhAnh} />
-                    <div className="flex-grow">
-                        <h2 className="text-pink-500 title-font font-medium text-2xl">{ticket.tenPhim}</h2>
-                        <p className="text-gray-500"><span className="font-bold">Giờ chiếu:</span> {moment(ticket.ngayDat).format('hh:mm A')} - <span className="font-bold">Ngày chiếu:</span>  {moment(ticket.ngayDat).format('DD-MM-YYYY')} .</p>
-                        <p><span className="font-bold">Địa điểm:</span> {seats.tenHeThongRap}   </p>
-                        <p>
-                            <span className="font-bold">Tên rạp:</span>  {seats.tenCumRap} - <span className="font-bold">Ghế:</span>  {ticket.danhSachGhe.map((ghe, index) => { return <span className="text-green-500 text-xl" key={index}> [ {ghe.tenGhe} ] </span> })}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        })
-    }
 
     return <div className="p-5">
 
         <section className="text-gray-600 body-font">
-            <div className="container px-5 py-24 mx-auto">
+            <div className="container px-5 mx-auto">
 
                 <div className="flex flex-wrap -m-2">
-                    {renderTicketItem()}
+
                     {renderLichSuDatVe()}
                 </div>
             </div>
