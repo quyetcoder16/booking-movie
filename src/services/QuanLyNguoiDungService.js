@@ -43,6 +43,9 @@ export class QuanLyNguoiDungService extends BaseService {
         return this.delete(`QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=${taiKhoan}`);
     }
 
+    updateUserByAdmin = (userUpdate) => {
+        return this.post("QuanLyNguoiDung/CapNhatThongTinNguoiDung", userUpdate);
+    }
 }
 
 export const quanLyNguoiDungService = new QuanLyNguoiDungService();

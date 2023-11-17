@@ -46,9 +46,10 @@ export default function Dashboard() {
             dataIndex: '',
             key: 'x',
             render: (text, record, index) => {
-                // console.log(record);
-                return (<>
-                    <Button style={{ backgroundColor: "#1677ff" }} type='primary'>
+                return (<div key={index}>
+                    <Button onClick={() => {
+                        history.push(`/admin/edituser/${record.taiKhoan}`);
+                    }} style={{ backgroundColor: "#1677ff" }} type='primary'>
                         <i class="fa-solid fa-pen-to-square"></i>
                     </Button>
                     <Button onClick={() => {
@@ -58,7 +59,7 @@ export default function Dashboard() {
                     }} className='ml-2' danger>
                         <i class="fa-solid fa-trash"></i>
                     </Button>
-                </>)
+                </div>)
             }
         }
     ];

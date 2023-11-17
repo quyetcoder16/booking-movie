@@ -1,5 +1,5 @@
 import { quanLyNguoiDungService } from "../../services/QuanLyNguoiDungService";
-import { DANG_NHAP_ACTION, LAY_DANH_SACH_LOAI_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
+import { DANG_NHAP_ACTION, GET_USER_EDIT, LAY_DANH_SACH_LOAI_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
 import { history } from '../../App';
 
 export const dangNhapAction = (thongTinDangNhap) => {
@@ -23,7 +23,6 @@ export const dangKyAction = (thongTinDangKy) => {
     return async (dispatch) => {
         try {
             const { data, status } = await quanLyNguoiDungService.dangKy(thongTinDangKy);
-            // console.log(data);
             if (status === 200) {
                 history.push('/login');
             }
@@ -53,8 +52,7 @@ export const capNhatThongTinNguoiDungAction = (thongTinNguoiDungUpdate) => {
     return async (dispatch) => {
         try {
             const { data, status } = await quanLyNguoiDungService.capNhatThongTinNguoiDung(thongTinNguoiDungUpdate);
-            // console.log(data);
-            // console.log(data);
+            console.log(data);
             if (status === 200) {
                 alert("Cập nhật thành công")
                 dispatch(LayThongTinNguoiDungAction());
@@ -70,7 +68,6 @@ export const layDanhSachNguoiDungTheoTuKhoaAction = (tuKhoa) => {
     return async (dispatch) => {
         try {
             const { data, status } = await quanLyNguoiDungService.layDanhSachNguoiDungTheoTuKhoa(tuKhoa);
-            // console.log(data);
             if (status === 200) {
                 dispatch({
                     type: LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA,
@@ -120,7 +117,6 @@ export const themNguoiDungAction = (newUser) => {
     return async (dispatch) => {
         try {
             const { data, status } = await quanLyNguoiDungService.themNguoiDung(newUser);
-            // console.log(data);
             if (status === 200) {
                 alert("Thêm Người dùng Thành công!");
                 history.push('/admin');
@@ -138,6 +134,37 @@ export const xoaNguoiDungAction = (taiKhoan) => {
             if (status === 200) {
                 alert('Xóa người dùng thành công');
                 dispatch(layDanhSachNguoiDungAction());
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+export const layNguoiDungEdit = (taiKhoan) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.layDanhSachNguoiDungTheoTuKhoa(taiKhoan);
+            if (status === 200) {
+                dispatch({
+                    type: GET_USER_EDIT,
+                    userEdit: data?.content[0],
+                })
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+export const updateUserByAdminAction = (userUpdate) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.updateUserByAdmin(userUpdate);
+            if (status === 200) {
+                alert("cập nhật thông tin thành công!");
+                dispatch(LayThongTinNguoiDungAction());
+                history.push('/admin');
             }
         } catch (err) {
             console.log(err);

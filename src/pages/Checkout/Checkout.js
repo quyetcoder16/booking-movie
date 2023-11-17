@@ -25,7 +25,6 @@ function Checkout(props) {
 
 
     const dispatch = useDispatch();
-    console.log('danhSachGheDangDat', danhSachGheDangDat);
     useEffect(() => {
         //Gọi hàm tạo ra 1 async function 
         const action = layChiTietPhongVeAction(props.match.params.id);
@@ -45,7 +44,6 @@ function Checkout(props) {
 
         //Load danh sách ghế đang đặt từ server về (lắng nghe tín hiệu từ server trả về)
         connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
-            console.log('danhSachGheKhachDat', dsGheKhachDat);
             //Bước 1: Loại mình ra khỏi danh sách 
             dsGheKhachDat = dsGheKhachDat.filter(item => item.taiKhoan !== userLogin.taiKhoan);
             //Bước 2 gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung 
@@ -85,7 +83,6 @@ function Checkout(props) {
     }
 
 
-    console.log({ chiTietPhongVe });
     const { thongTinPhim, danhSachGhe } = chiTietPhongVe;
 
 
@@ -270,7 +267,6 @@ export default function CheckoutTab(props) {
     return <div className="p-5">
         <Tabs tabBarExtraContent={operations} defaultActiveKey="1" activeKey={tabActive} onChange={(key) => {
 
-            // console.log('key',  key)
             dispatch({
                 type: 'CHANGE_TAB_ACTIVE',
                 number: key.toString()
@@ -307,7 +303,6 @@ function KetQuaDatVe(props) {
         dispatch(action)
     }, [])
 
-    console.log('thongTinNguoiDung', thongTinNguoiDung);
 
     const renderTicketItem = function () {
         return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {

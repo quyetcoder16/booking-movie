@@ -1,5 +1,5 @@
 import { TOKEN, USER_LOGIN } from "../../utils/Setting/config";
-import { DANG_NHAP_ACTION, LAY_DANH_SACH_LOAI_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
+import { DANG_NHAP_ACTION, GET_USER_EDIT, LAY_DANH_SACH_LOAI_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
 
 let user = {};
 
@@ -12,6 +12,7 @@ const initialState = {
     thongTinNguoiDung: {},
     danhSachNguoiDung: [],
     danhSachLoaiNguoiDung: [],
+    userEdit: {},
 }
 
 export const QuanLyNguoiDungReducer = (state = initialState, action) => {
@@ -39,6 +40,10 @@ export const QuanLyNguoiDungReducer = (state = initialState, action) => {
 
         case LAY_DANH_SACH_LOAI_NGUOI_DUNG: {
             return { ...state, danhSachLoaiNguoiDung: action.danhSachLoaiNguoiDung };
+        }
+
+        case GET_USER_EDIT: {
+            return { ...state, userEdit: action.userEdit };
         }
 
         default: {

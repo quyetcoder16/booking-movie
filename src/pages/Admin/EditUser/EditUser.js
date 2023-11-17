@@ -1,16 +1,23 @@
-import Input from 'antd/es/input/Input'
 import React from 'react'
-import { UserOutlined, KeyOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
-import { Button, Select } from 'antd';
-import { history } from '../../../App';
-import { connect, useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { layDanhSachLoaiNguoiDungAction, themNguoiDungAction } from '../../../redux/actions/QuanLyNguoiDungAction';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { layDanhSachLoaiNguoiDungAction, layNguoiDungEdit, updateUserByAdminAction } from '../../../redux/actions/QuanLyNguoiDungAction';
 import _ from 'lodash';
+import { Button, Input, Select } from 'antd';
+import { UserOutlined, KeyOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { history } from '../../../App';
 import { withFormik } from 'formik';
 import * as Yup from 'yup';
+import { GROUPID } from '../../../utils/Setting/config';
 
-function AddUser(props) {
+function EditUser(props) {
+
+    const dispatch = useDispatch();
+
+    const tuKhoa = props.match.params.id;
+    useEffect(() => {
+        dispatch(layNguoiDungEdit(tuKhoa));
+    }, []);
 
     const {
         values,
@@ -22,7 +29,6 @@ function AddUser(props) {
         handleSubmit,
     } = props;
 
-    const dispatch = useDispatch();
     useEffect(() => {
         dispatch(layDanhSachLoaiNguoiDungAction());
     }, []);
@@ -42,34 +48,34 @@ function AddUser(props) {
 
     return (
         <form onSubmit={handleSubmit}>
-            <div style={{ fontWeight: 600 }} className='text-lg'>Thêm Người Dùng</div>
+            <div style={{ fontWeight: 600 }} className='text-lg'>Edit Người Dùng</div>
             <div className='mt-5 grid grid-cols-2 gap-8'>
                 <div>
                     <div >
                         <div className='ml-2 text-base'>Tài Khoản</div>
-                        <Input onChange={handleChange} name='taiKhoan' className='mt-2' size="large" placeholder="Nhập Tài Khoản" prefix={<UserOutlined />} />
+                        <Input disabled value={values.taiKhoan} onChange={handleChange} name='taiKhoan' className='mt-2' size="large" placeholder="Nhập Tài Khoản" prefix={<UserOutlined />} />
                         <div className='text-red-600'>{errors.taiKhoan}</div>
                     </div>
                     <div className='mt-5'>
                         <div className='ml-2 text-base'>Mật Khẩu</div>
-                        <Input onChange={handleChange} name='matKhau' className='mt-2' size="large" placeholder="Nhập Mật Khẩu" prefix={<KeyOutlined />} />
+                        <Input value={values.matKhau} onChange={handleChange} name='matKhau' className='mt-2' size="large" placeholder="Nhập Mật Khẩu" prefix={<KeyOutlined />} />
                         <div className='text-red-600'>{errors.matKhau}</div>
                     </div>
                     <div className='mt-5'>
                         <div className='ml-2 text-base'>Họ Tên</div>
-                        <Input onChange={handleChange} name='hoTen' className='mt-2' size="large" placeholder="Nhập Họ Tên" prefix={<UserOutlined />} />
+                        <Input value={values.hoTen} onChange={handleChange} name='hoTen' className='mt-2' size="large" placeholder="Nhập Họ Tên" prefix={<UserOutlined />} />
                         <div className='text-red-600'>{errors.hoTen}</div>
                     </div>
                 </div>
                 <div>
                     <div >
                         <div className='ml-2 text-base'>Email</div>
-                        <Input onChange={handleChange} name='email' className='mt-2' size="large" placeholder="Nhập Email" prefix={<MailOutlined />} />
+                        <Input value={values.email} onChange={handleChange} name='email' className='mt-2' size="large" placeholder="Nhập Email" prefix={<MailOutlined />} />
                         <div className='text-red-600'>{errors.email}</div>
                     </div>
                     <div className='mt-5'>
                         <div className='ml-2 text-base'>Số Điện Thoại</div>
-                        <Input onChange={handleChange} name='soDt' className='mt-2' size="large" placeholder="Nhập Số Điện Thoại" prefix={<PhoneOutlined />} />
+                        <Input value={values.soDt} onChange={handleChange} name='soDt' className='mt-2' size="large" placeholder="Nhập Số Điện Thoại" prefix={<PhoneOutlined />} />
                         <div className='text-red-600'>{errors.soDt}</div>
                     </div>
                     <div className='mt-5'>
@@ -96,7 +102,7 @@ function AddUser(props) {
                 </div>
                 <div className='col-span-6'></div>
                 <div className='col-span-2 text-right'>
-                    <Button htmlType='submit' style={{ backgroundColor: "#1677ff" }} size='large' type='primary'>Add User</Button>
+                    <Button htmlType='submit' style={{ backgroundColor: "#1677ff" }} size='large' type='primary'>Save</Button>
                 </div>
             </div>
         </form>
@@ -104,17 +110,17 @@ function AddUser(props) {
 }
 
 
-const AddUserWithFormik = withFormik({
+const EditUserWithFormik = withFormik({
     enableReinitialize: true,
     mapPropsToValues: (props) => {
         return {
-            taiKhoan: "",
-            matKhau: "",
-            email: "",
-            soDt: "",
-            maNhom: "GP01",
-            hoTen: "",
-            maLoaiNguoiDung: props.danhSachLoaiNguoiDung[0]?.maLoaiNguoiDung,
+            taiKhoan: props.userEdit?.taiKhoan,
+            matKhau: props.userEdit?.matKhau,
+            email: props.userEdit?.email,
+            soDt: props.userEdit?.soDt,
+            maNhom: GROUPID,
+            hoTen: props.userEdit?.hoTen,
+            maLoaiNguoiDung: props.userEdit?.maLoaiNguoiDung,
         }
     },
 
@@ -138,19 +144,18 @@ const AddUserWithFormik = withFormik({
     }),
 
     handleSubmit: (values, { props, setSubmitting }) => {
-        // console.log(values);
-        if (window.confirm("Bạn có chắc chắn tạo người dùng mới không ?")) {
-            props.dispatch(themNguoiDungAction(values));
+        if (window.confirm("Bạn có chắc chắn cập nhật người dùng không ?")) {
+            props.dispatch(updateUserByAdminAction(values));
         }
     },
 
-    displayName: 'addUser',
-})(AddUser);
+    displayName: 'editUser',
+})(EditUser);
 
 const mapStateToProps = (state) => {
     return {
-        danhSachLoaiNguoiDung: state.QuanLyNguoiDungReducer.danhSachLoaiNguoiDung,
+        userEdit: state.QuanLyNguoiDungReducer.userEdit,
     }
 }
 
-export default connect(mapStateToProps)(AddUserWithFormik);
+export default connect(mapStateToProps)(EditUserWithFormik);

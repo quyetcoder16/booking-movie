@@ -17,7 +17,6 @@ export default function Detail(props) {
 
     const filmDetail = useSelector(state => state.QuanLyPhimReducer.filmDetail);
 
-    console.log({ filmDetail })
 
     const dispatch = useDispatch();
 

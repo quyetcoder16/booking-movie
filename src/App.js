@@ -20,6 +20,7 @@ import ShowTime from './pages/Admin/ShowTime/ShowTime';
 import Edit from './pages/Admin/Films/Edit/Edit';
 import Profile from './pages/Profile/Profile';
 import AddUser from './pages/Admin/AddUser/AddUser';
+import EditUser from './pages/Admin/EditUser/EditUser';
 export const history = createBrowserHistory();
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
         {/* <AdminTemplate path="/admin/showtimes" exact Component={ShowTime} /> */}
         <AdminTemplate path="/admin/films/showtime/:id/:tenphim" exact Component={ShowTime} />
         <AdminTemplate path="/admin/films/edit/:id" exact Component={Edit} />
+        <AdminTemplate path='/admin/edituser/:id' exact Component={EditUser} />
 
       </Switch>
     </Router>
