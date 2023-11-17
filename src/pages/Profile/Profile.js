@@ -188,7 +188,7 @@ const LichSuDatVe = (props) => {
                     <div className='col-span-10 mt-2 '>
                         <div className='flex'>
                             <div>
-                                <img style={{ width: 100, height: 100 }} src={rap.logo} alt='' />
+                                <img style={{ width: 100, height: 100 }} src={rap?.logo} alt='' />
                             </div>
                             <div className='ml-2 mt-2'>
                                 <div className='text-xl' style={{ fontWeight: "bold" }}>{seats.tenHeThongRap}</div>
