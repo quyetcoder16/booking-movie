@@ -39,6 +39,10 @@ export class QuanLyNguoiDungService extends BaseService {
         return this.post("QuanLyNguoiDung/ThemNguoiDung", newUser);
     }
 
+    xoaNguoiDung = (taiKhoan) => {
+        return this.delete(`QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=${taiKhoan}`);
+    }
+
 }
 
 export const quanLyNguoiDungService = new QuanLyNguoiDungService();

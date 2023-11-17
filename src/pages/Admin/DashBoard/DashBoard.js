@@ -2,7 +2,7 @@ import { Button, Input, Space, Table } from 'antd'
 import React from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { layDanhSachNguoiDungAction, layDanhSachNguoiDungTheoTuKhoaAction } from '../../../redux/actions/QuanLyNguoiDungAction';
+import { layDanhSachNguoiDungAction, layDanhSachNguoiDungTheoTuKhoaAction, xoaNguoiDungAction } from '../../../redux/actions/QuanLyNguoiDungAction';
 import { useState } from 'react';
 import { history } from '../../../App';
 
@@ -45,12 +45,17 @@ export default function Dashboard() {
             title: "Action",
             dataIndex: '',
             key: 'x',
-            render: () => {
+            render: (text, record, index) => {
+                // console.log(record);
                 return (<>
                     <Button style={{ backgroundColor: "#1677ff" }} type='primary'>
                         <i class="fa-solid fa-pen-to-square"></i>
                     </Button>
-                    <Button className='ml-2' danger>
+                    <Button onClick={() => {
+                        if (window.confirm(`bạn có chắc chắn xóa tài khoản : ${record.taiKhoan}`)) {
+                            dispatch(xoaNguoiDungAction(record.taiKhoan));
+                        }
+                    }} className='ml-2' danger>
                         <i class="fa-solid fa-trash"></i>
                     </Button>
                 </>)
@@ -73,6 +78,8 @@ export default function Dashboard() {
                 <Button onClick={() => {
                     if (dataSearch.trim() !== '') {
                         dispatch(layDanhSachNguoiDungTheoTuKhoaAction(dataSearch));
+                    } else {
+                        dispatch(layDanhSachNguoiDungAction());
                     }
                 }} style={{ backgroundColor: "#1677ff" }} type="primary"><i class="fa-solid fa-magnifying-glass"></i><span className='ml-1'>Search</span></Button>
             </Space.Compact>

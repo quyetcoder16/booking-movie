@@ -130,3 +130,17 @@ export const themNguoiDungAction = (newUser) => {
         }
     }
 }
+
+export const xoaNguoiDungAction = (taiKhoan) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.xoaNguoiDung(taiKhoan);
+            if (status === 200) {
+                alert('Xóa người dùng thành công');
+                dispatch(layDanhSachNguoiDungAction());
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
