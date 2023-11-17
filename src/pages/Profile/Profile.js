@@ -15,7 +15,7 @@ function Profile(props) {
     return (
         <div className='pt-24'  >
             <div className='p-10'>
-                <Tabs defaultActiveKey="2" size='large'>
+                <Tabs defaultActiveKey="1" size='large'>
                     <Tabs.TabPane tab="Thông Tin Cá Nhân" key="1">
                         <ThongTinCaNhan {...props} />
                     </Tabs.TabPane>
@@ -138,7 +138,7 @@ const layThongTinCumRap = async (maRap) => {
     }
 }
 
-const LichSuDatVe = async (props) => {
+const LichSuDatVe = (props) => {
 
     const dispatch = useDispatch();
 
@@ -152,76 +152,48 @@ const LichSuDatVe = async (props) => {
     const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
     const { thongTinHeThongRap } = useSelector(state => state.QuanLyRapReducer);
 
-    // console.log(thongTinHeThongRap);
-
     let arrThongTinCumRap = [];
     const [thongTinCumRap, setThongTinCumRap] = useState([]);
-    // _.map(thongTinNguoiDung.thongTinDatVe, async (ticket, index) => {
-    //     const seats = _.first(ticket.danhSachGhe);
-    //     let tmp = await layThongTinCumRap(seats.maHeThongRap);
-    //     arrThongTinCumRap.push({
-    //         maHeThongRap: seats.maHeThongRap,
-    //         danhSachCumRap: tmp,
-    //     });
-    // });
 
-    for (const ticket of thongTinNguoiDung.thongTinDatVe) {
-        const seats = _.first(ticket.danhSachGhe);
-        let tmp = await layThongTinCumRap(seats.maHeThongRap);
-        arrThongTinCumRap.push({
-            maHeThongRap: seats.maHeThongRap,
-            danhSachCumRap: tmp,
-        });
-    }
-
-    setThongTinCumRap(arrThongTinCumRap);
-    console.log(arrThongTinCumRap);
-
-    // console.log(thongTinCumRap);
-    // console.log(thongTinCumRap);
-
-    // console.log(thongTinCumRap);
+    useEffect(() => {
+        const fetchData = async () => {
+            for (const ticket of thongTinNguoiDung.thongTinDatVe || []) {
+                const seats = _.first(ticket.danhSachGhe);
+                let tmp = await layThongTinCumRap(seats.maHeThongRap);
+                arrThongTinCumRap.push({
+                    maHeThongRap: seats.maHeThongRap,
+                    danhSachCumRap: tmp,
+                });
+            }
+            setThongTinCumRap(arrThongTinCumRap);
+        }
+        fetchData();
+    }, [thongTinNguoiDung.thongTinDatVe]);
 
     const renderLichSuDatVe = () => {
 
         return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
-            console.log(ticket);
             const seats = _.first(ticket.danhSachGhe);
             const rap = _.find(thongTinHeThongRap, state => state.maHeThongRap === seats.maHeThongRap);
-            // console.log(rap);
-            // console.log(seats);
-            // const thongTinCumRap = layThongTinCumRap(seats.maHeThongRap);
-            // console.log(thongTinCumRap);
 
-            // console.log(thongTinCumRap);
-            // console.log(seats.maHeThongRap);
-            // Promise.all([thongTinCumRap]).then(() => {
-            //     let diaChi = _.findIndex(thongTinCumRap, item => item.maHeThongRap === seats.maHeThongRap);
-            //     console.log(diaChi);
-            // })
+            let indexHeThongRap = _.findIndex(thongTinCumRap, item => item.maHeThongRap === seats.maHeThongRap);
+            const thongTinRap = _.find(thongTinCumRap[indexHeThongRap]?.danhSachCumRap, item => item.tenCumRap === seats.tenHeThongRap);
 
-            // for (let item of thongTinCumRap) {
-            //     console.log(item);
-            //     if (item.maHeThongRap === seats.maHeThongRap) {
-            //         console.log(item);
-            //     }
-            // }
-
-            return (<div className='w-full pt-10 '>
+            return (<div key={index} className='w-full pt-10 '>
                 <div className='grid grid-cols-12 border-solid  border-b-slate-900 border-2'>
                     {/* <div>{ }</div> */}
                     <div className='col-span-2'>
                         <img style={{ width: 150, height: 150 }} src={ticket.hinhAnh} alt={ticket.hinhAnh} />
                     </div>
-                    <div className='col-span-10 '>
+                    <div className='col-span-10 mt-2 '>
                         <div className='flex'>
                             <div>
                                 <img style={{ width: 100, height: 100 }} src={rap.logo} alt='' />
                             </div>
-                            <div className='ml-2'>
+                            <div className='ml-2 mt-2'>
                                 <div className='text-xl' style={{ fontWeight: "bold" }}>{seats.tenHeThongRap}</div>
                                 <div className='mt-5 text-base
-                                '>địa chỉ</div>
+                                '>{thongTinRap?.diaChi}</div>
                             </div>
                         </div>
                         <div>
@@ -244,9 +216,7 @@ const LichSuDatVe = async (props) => {
 
         <section className="text-gray-600 body-font">
             <div className="container px-5 mx-auto">
-
                 <div className="flex flex-wrap -m-2">
-
                     {renderLichSuDatVe()}
                 </div>
             </div>
