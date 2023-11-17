@@ -1,5 +1,5 @@
 import { quanLyNguoiDungService } from "../../services/QuanLyNguoiDungService";
-import { DANG_NHAP_ACTION, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
+import { DANG_NHAP_ACTION, LAY_DANH_SACH_LOAI_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
 import { history } from '../../App';
 
 export const dangNhapAction = (thongTinDangNhap) => {
@@ -58,6 +58,72 @@ export const capNhatThongTinNguoiDungAction = (thongTinNguoiDungUpdate) => {
             if (status === 200) {
                 alert("Cập nhật thành công")
                 dispatch(LayThongTinNguoiDungAction());
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+
+export const layDanhSachNguoiDungTheoTuKhoaAction = (tuKhoa) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.layDanhSachNguoiDungTheoTuKhoa(tuKhoa);
+            // console.log(data);
+            if (status === 200) {
+                dispatch({
+                    type: LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA,
+                    danhSachNguoiDung: data.content,
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+export const layDanhSachNguoiDungAction = () => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.layDanhSachNguoiDung();
+            // console.log(data);
+            if (status === 200) {
+                dispatch({
+                    type: LAY_DANH_SACH_NGUOI_DUNG,
+                    danhSachNguoiDung: data.content,
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+export const layDanhSachLoaiNguoiDungAction = () => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.layDanhSachLoaiNguoiDung();
+            if (status === 200) {
+                dispatch({
+                    type: LAY_DANH_SACH_LOAI_NGUOI_DUNG,
+                    danhSachLoaiNguoiDung: data.content,
+                })
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+export const themNguoiDungAction = (newUser) => {
+    return async (dispatch) => {
+        try {
+            const { data, status } = await quanLyNguoiDungService.themNguoiDung(newUser);
+            // console.log(data);
+            if (status === 200) {
+                alert("Thêm Người dùng Thành công!");
+                history.push('/admin');
             }
         } catch (err) {
             console.log(err);

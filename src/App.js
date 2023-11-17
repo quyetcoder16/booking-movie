@@ -19,6 +19,7 @@ import AddNew from './pages/Admin/Films/AddNew/AddNew';
 import ShowTime from './pages/Admin/ShowTime/ShowTime';
 import Edit from './pages/Admin/Films/Edit/Edit';
 import Profile from './pages/Profile/Profile';
+import AddUser from './pages/Admin/AddUser/AddUser';
 export const history = createBrowserHistory();
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         <HomeTemplate path='/profile' exact Component={Profile} />
 
         <AdminTemplate path="/admin" exact Component={Dashboard} />
+        <AdminTemplate path='/admin/adduser' exact Component={AddUser} />
         <AdminTemplate path="/admin/films" exact Component={Films} />
         <AdminTemplate path="/admin/films/addnew" exact Component={AddNew} />
         <AdminTemplate path="/admin/users" exact Component={Dashboard} />

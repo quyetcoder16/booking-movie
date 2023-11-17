@@ -1,5 +1,5 @@
 import { TOKEN, USER_LOGIN } from "../../utils/Setting/config";
-import { DANG_NHAP_ACTION, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
+import { DANG_NHAP_ACTION, LAY_DANH_SACH_LOAI_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG, LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA, SET_THONG_TIN_NGUOI_DUNG } from "../types/QuanLyNguoiDungType";
 
 let user = {};
 
@@ -9,7 +9,9 @@ if (localStorage.getItem(USER_LOGIN)) {
 
 const initialState = {
     userLogin: user,
-    thongTinNguoiDung: {}
+    thongTinNguoiDung: {},
+    danhSachNguoiDung: [],
+    danhSachLoaiNguoiDung: [],
 }
 
 export const QuanLyNguoiDungReducer = (state = initialState, action) => {
@@ -24,6 +26,19 @@ export const QuanLyNguoiDungReducer = (state = initialState, action) => {
 
         case SET_THONG_TIN_NGUOI_DUNG: {
             return { ...state, thongTinNguoiDung: action.thongTinNguoiDung };
+        }
+
+        case LAY_DANH_SACH_NGUOI_DUNG: {
+            state.danhSachNguoiDung = action.danhSachNguoiDung;
+            return { ...state };
+        }
+
+        case LAY_DANH_SACH_NGUOI_DUNG_THEO_TU_KHOA: {
+            return { ...state, danhSachNguoiDung: action.danhSachNguoiDung };
+        }
+
+        case LAY_DANH_SACH_LOAI_NGUOI_DUNG: {
+            return { ...state, danhSachLoaiNguoiDung: action.danhSachLoaiNguoiDung };
         }
 
         default: {
